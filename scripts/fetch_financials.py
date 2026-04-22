@@ -6,39 +6,35 @@ RAW_DIR = Path("data/raw")
 RAW_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def fetch_all(ticker: str = "MSFT"):
+def fetch_all(ticker: str = "MSFT") -> None:
 
-    print(f"Downloading data for {ticker}")
+    print(f"\n=== Fetching financials for {ticker} via yfinance ===\n")
     co = yf.Ticker(ticker)
 
-    # Income statement
     inc = co.financials.T
     inc.index = inc.index.astype(str)
     out = RAW_DIR / f"{ticker}_income.csv"
     inc.to_csv(out)
-    print(f"Saved income statement to {out}")
+    print(f"  ✓ Income statement  → {out}  ({len(inc)} years)")
 
-    # Balance sheet
     bs = co.balance_sheet.T
     bs.index = bs.index.astype(str)
     out = RAW_DIR / f"{ticker}_balance.csv"
     bs.to_csv(out)
-    print(f"Saved balance sheet to {out}")
+    print(f"  ✓ Balance sheet     → {out}  ({len(bs)} years)")
 
-    # Cash flow statement
     cf = co.cashflow.T
     cf.index = cf.index.astype(str)
     out = RAW_DIR / f"{ticker}_cashflow.csv"
     cf.to_csv(out)
-    print(f"Saved cash flow statement to {out}")
+    print(f"  ✓ Cash flow         → {out}  ({len(cf)} years)")
 
-    # Company profile
     info = co.info
     out = RAW_DIR / f"{ticker}_profile.json"
     with open(out, "w") as f:
         json.dump(info, f, indent=2)
-    print(f"Saved company profile to {out}")
-    print(f"Finished saving raw files")
+    print(f"  ✓ Profile           → {out}")
+    print(f"\n✓ All raw data saved to data/raw/")
 
 
 if __name__ == "__main__":

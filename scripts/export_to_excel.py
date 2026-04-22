@@ -31,20 +31,20 @@ def write_historicals_tab(wb: Workbook, ticker: str) -> None:
     ws["A2"].font = Font(italic=True, color="888888", size=9)
 
     display = [
-        ("fiscal_year",               "Year",           None),
-        ("revenue",                   "Revenue",        "#,##0"),
-        ("gross_profit",              "Gross Profit",   "#,##0"),
-        ("ebit",                       "EBIT",           "#,##0"),
-        ("net_income",                "Net Income",     "#,##0"),
-        ("gross_margin_pct",          "Gross Margin",   "0.0%"),
-        ("ebit_margin_pct",           "EBIT Margin",    "0.0%"),
-        ("tax_rate",                  "Tax Rate",       "0.0%"),
-        ("depreciation_amortization", "D&A",            "#,##0"),
-        ("capex",                      "CapEx",          "#,##0"),
-        ("free_cash_flow",            "Free Cash Flow", "#,##0"),
-        ("total_debt",                "Total Debt",     "#,##0"),
-        ("cash",                       "Cash",           "#,##0"),
-        ("net_working_capital",       "Net WC",         "#,##0"),
+        ("fiscal_year", "Year", None),
+        ("revenue", "Revenue", "#,##0"),
+        ("gross_profit", "Gross Profit", "#,##0"),
+        ("ebit", "EBIT", "#,##0"),
+        ("net_income", "Net Income", "#,##0"),
+        ("gross_margin_pct", "Gross Margin", "0.0%"),
+        ("ebit_margin_pct", "EBIT Margin", "0.0%"),
+        ("tax_rate", "Tax Rate", "0.0%"),
+        ("depreciation_amortization", "D&A", "#,##0"),
+        ("capex", "CapEx", "#,##0"),
+        ("free_cash_flow", "Free Cash Flow", "#,##0"),
+        ("total_debt", "Total Debt", "#,##0"),
+        ("cash", "Cash", "#,##0"),
+        ("net_working_capital", "Net WC", "#,##0"),
     ]
     display = [(c,l,f) for c,l,f in display if c in df.columns]
 
@@ -71,14 +71,14 @@ def write_profile_tab(wb: Workbook, ticker: str) -> None:
     ws["A1"] = f"{ticker} — Company Profile (via yfinance)"
     ws["A1"].font = Font(bold=True, size=12, color="1F3864")
     fields = [
-        ("Company",           info.get("longName")),
-        ("Sector",            info.get("sector")),
-        ("Beta",              info.get("beta")),
+        ("Company", info.get("longName")),
+        ("Sector", info.get("sector")),
+        ("Beta", info.get("beta")),
         ("Shares Outstanding", info.get("sharesOutstanding")),
-        ("Market Cap",        info.get("marketCap")),
-        ("Current Price",     info.get("currentPrice")),
-        ("52w High",          info.get("fiftyTwoWeekHigh")),
-        ("52w Low",           info.get("fiftyTwoWeekLow")),
+        ("Market Cap", info.get("marketCap")),
+        ("Current Price", info.get("currentPrice")),
+        ("52w High", info.get("fiftyTwoWeekHigh")),
+        ("52w Low", info.get("fiftyTwoWeekLow")),
     ]
     for i, (label, value) in enumerate(fields, 3):
         ws.cell(row=i, column=1, value=label).font = Font(bold=True, color="444444")
@@ -87,7 +87,7 @@ def write_profile_tab(wb: Workbook, ticker: str) -> None:
     ws.column_dimensions["B"].width = 28
 
 
-def main(ticker: str = "MSFT"):
+def main(ticker: str = "MSFT") -> None:
     wb = Workbook()
     wb.remove(wb.active)
     write_historicals_tab(wb, ticker)
@@ -98,8 +98,8 @@ def main(ticker: str = "MSFT"):
         ws["A1"].font = Font(color="888888", italic=True)
     out = EXCEL_DIR / f"{ticker}_DCF_Model.xlsx"
     wb.save(out)
-    print(f"Workbook saved: {out}")
-    print("Created tabs: Historicals, Profile, Assumptions, Forecast, DCF, Sensitivity, Summary")
+    print(f"✓ Workbook saved → {out}")
+    print("  Tabs: Historicals, Profile, Assumptions, Forecast, DCF, Sensitivity, Summary")
 
 
 if __name__ == "__main__":
