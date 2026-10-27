@@ -1,75 +1,59 @@
-# Microsoft (MSFT) DCF Valuation & Sensitivity Analysis
+# Microsoft (MSFT) DCF Valuation
 
-Built a 5-year discounted cash flow model on Microsoft (MSFT) using Python-pulled financials via yfinance and a fully structured Excel model. Assumptions are sourced from Alpha Spread, yfinance, CNBC earnings reports, and CFO commentary from the Q1 FY2026 earnings call. First built in April 2026; refreshed on 10/26/2026 with FY2026 actuals (see [What Changed Since April](#what-changed-since-april)).
+A 5-year DCF on Microsoft. Python pulls and cleans the financials (yfinance, pandas, openpyxl), and the model itself is in Excel. I built it in April 2026 and updated it on 10/26/2026 after FY2026 results came out.
 
-## Results (as of 10/26/2026)
-- **Intrinsic Value Per Share:** $395.95
-- **Current Market Price:** $532.60
-- **Implied Downside:** ~26%
-- **Conclusion:** MSFT trades well above fair value under base case assumptions. At $532.60 the market is pricing in either a ~7.9% discount rate (vs. 9.45% in the model) or a much faster payoff from AI capex than the model assumes.
+## Result
 
-## Model Structure
-- **Assumptions Tab:** All inputs in one place — revenue growth rates, margin assumptions, WACC inputs (risk-free rate, ERP, beta, cost of debt), terminal growth rate, and valuation timing, each with a cited source
-- **Forecast Tab:** FY2022–FY2026 historicals and FY2027E–FY2031E projections, including a full FCFF build from NOPAT through CapEx and NWC changes
-- **DCF Tab:** Discounted FCFF with a stub period for the part of FY2027 still ahead of the valuation date, terminal value via Gordon Growth Model, enterprise value bridge, and implied intrinsic value per share
-- **Sensitivity Tab:** 2-way sensitivity analysis across WACC (8.0%–10.5%) and terminal growth rate (2.0%–4.0%), calculated live from the DCF tab, with conditional formatting vs. current market price
+As of 10/26/2026 I get $395.95 per share against a market price of $532.60, about 26% downside. To justify $532.60, you'd need a discount rate around 7.9% instead of my 9.45%, or AI capex that pays off a lot faster than I assume.
 
-## Key Assumptions
-- WACC of 9.45% derived via CAPM using a risk-free rate of 4.99% (10Y Treasury), ERP of 4.18%, and beta of 1.099, with a market-value debt weight of 2.6% (debt including finance leases)
-- Enterprise-to-equity bridge taken from the FY2026 10-K: debt including $66.6B of finance lease liabilities, cash and short-term investments, and long-term equity investments at carrying value; diluted share count
-- Terminal growth rate of 3.00% anchored to long-run nominal GDP
-- CapEx modeled as a glide path from 30% of revenue in FY2027 down to 11% by FY2031, reflecting peak AI infrastructure spending normalizing as data center buildout matures
-- Revenue growth tapering from 17% in FY2027 to 11% in FY2031, reflecting AI-driven cloud acceleration gradually normalizing
-- Margins, tax rate, and D&A taken from FY2026 actuals (D&A as a 3-year average, FY2024–FY2026)
+## Assumptions
 
-## What Changed Since April
-The original April 2026 model is kept at [`excel/archive/MSFT_DCF_Model_2026-04.xlsx`](excel/archive/MSFT_DCF_Model_2026-04.xlsx) (git tag `v1-apr2026`).
+- WACC of 9.45% from CAPM: 4.99% 10Y Treasury, 4.18% ERP, 1.099 beta, and a 2.6% debt weight
+- Revenue growth of 17% in FY2027, slowing to 11% by FY2031
+- Capex at 30% of revenue in FY2027, falling to 11% by FY2031 as the data center buildout winds down
+- Margins and tax rate from FY2026; D&A as a 3-year average
+- 3% terminal growth (Gordon Growth)
+- Debt, cash, and investments from the FY2026 10-K, with $66.6B of finance leases counted as debt
 
-**April forecast vs. FY2026 actuals**
+The workbook has Assumptions, Forecast, DCF, and Sensitivity tabs. The sensitivity grid runs WACC from 8.0% to 10.5% against terminal growth from 2% to 4%.
+
+## What changed since April
+
+The original model is in `excel/archive/MSFT_DCF_Model_2026-04.xlsx` (tag `v1-apr2026`). Here's how its FY2026 forecast held up:
 
 | FY2026 | April forecast | Actual |
 |---|---|---|
 | Revenue growth | 16.7% | 17.8% |
 | EBIT margin | 45.6% | 46.8% |
-| CapEx / revenue | 30.0% | 34.9% |
+| Capex / revenue | 30.0% | 34.9% |
 
-Revenue and margins came in slightly ahead of the forecast. CapEx ran well above it (Q4 FY2026 alone was 39.8% of revenue), so the April glide path is shifted one year later rather than kept on its original schedule.
+Revenue and margins came in a bit better than I expected. Capex didn't. It ran well above my estimate (39.8% of revenue in Q4 alone), so I pushed the capex glide path back a year.
 
-**Bridge from $380.14 to $395.95**
+Going from $380.14 to $395.95:
 
-| Step | Value / share |
+| Step | Per share |
 |---|---|
-| April model as published | $380.14 |
-| Fix: terminal value grew the final-year FCFF by (1+g) twice | $370.78 |
-| Fix: count short-term investments as cash in the EV bridge | $379.44 |
-| Fix: stub period (April valuation date was 72 days before FY2026 year end) | $399.96 |
-| Roll forward to FY2026 actuals, FY2027E–FY2031E, 10/26/2026 inputs | $396.28 |
-| Bridge from the 10-K: finance leases as debt, LT investments, diluted shares, cost of debt | $395.95 |
+| April model | $380.14 |
+| Fixed the terminal value, which grew the last year's FCFF by (1+g) twice | $370.78 |
+| Counted short-term investments as cash | $379.44 |
+| Added a stub period (April was 72 days before fiscal year end) | $399.96 |
+| Rolled forward to FY2026 actuals and current inputs | $396.28 |
+| Took debt, cash, and investments from the 10-K | $395.95 |
 
-Most of the roll-forward effect is the discount rate: the 10Y Treasury rose from 4.34% to 4.99%, taking WACC from 8.80% to 9.49%. At the April WACC the refreshed model gives $446.87. The 10-K bridge corrections are individually material but offset each other.
+Rates did most of the damage. The 10Y went from 4.34% to 4.99%, which pushed WACC from 8.80% to 9.49%. At the old WACC the updated model would give $446.87.
 
-## Known Limitations
-Judgment calls the base case does not make, with their effect on value per share:
+## Where I could be wrong
 
-| Alternative | Value / share |
+| If instead... | Per share |
 |---|---|
-| Count new finance-lease assets as capex ($24.6B in FY2026, 7.4% of revenue) | ~$361 |
-| Mid-year discounting convention | ~$399 |
-| Value the OpenAI stake at ~$135B (Oct 2025 recapitalization) instead of book | ~$409 |
-| 10-year forecast fading growth from 17% to 6% before the terminal value | ~$475 |
-| ERP of 4.0% / 4.5% instead of 4.18% | ~$409 / ~$374 |
+| New finance lease assets count as capex ($24.6B in FY2026) | ~$361 |
+| Mid-year discounting | ~$399 |
+| The OpenAI stake is valued at ~$135B (Oct 2025 recapitalization), not book | ~$409 |
+| A 10-year forecast fades growth from 17% to 6% first | ~$475 |
+| ERP is 4.0% / 4.5% | ~$409 / ~$374 |
 
-- **D&A vs. capex:** D&A is held at 10.2% of revenue, but the PP&E Microsoft has already built points to D&A of 14–16% of revenue over FY2027–FY2031. That sits awkwardly with both the flat 46.8% EBIT margin and the 11% terminal capex (below where D&A would be).
-- **Terminal value:** about 82% of enterprise value, implying ~10x FY2031 EBITDA, against ~18x forward EBITDA for the stock today.
-- **Stub period:** balance sheet is as of 6/30/2026, while FY2027 cash flow is counted only from 10/26/2026; the Q1 FY2027 10-Q will close that gap.
+The weakest spot is D&A. I hold it at 10.2% of revenue, but the assets Microsoft has already built point to more like 14 to 16%. That doesn't fit well with a flat EBIT margin, or with terminal capex (11%) sitting below D&A. The terminal value is also 82% of enterprise value and works out to about 10x FY2031 EBITDA, while the stock trades near 18x forward EBITDA. Finally, the balance sheet is from 6/30/2026, so the Q1 FY2027 10-Q should be folded in once it's out.
 
-## Data Pipeline
-1. `scripts/fetch_financials.py` pulls statements and the company profile from yfinance into `data/raw/`
-2. `scripts/clean_data.py` normalizes them into `data/processed/MSFT_historicals.csv`
-3. `scripts/export_to_excel.py` writes the Historicals and Profile tabs
+## Data
 
-Yahoo has since revised FY2024–FY2025 D&A to exclude "other" items (FY2025: $34.2B → $29.4B); the historicals use the revised series so all years are on one definition.
-
-## Tools
-- Python (yfinance, pandas, openpyxl)
-- Microsoft Excel
+`scripts/fetch_financials.py` pulls statements from yfinance, `clean_data.py` builds `data/processed/MSFT_historicals.csv`, and `export_to_excel.py` writes the Historicals and Profile tabs. Yahoo has since revised FY2024 and FY2025 D&A (FY2025 went from $34.2B to $29.4B), and I use the revised numbers so every year is on the same basis.
