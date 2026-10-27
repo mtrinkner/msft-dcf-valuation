@@ -45,6 +45,7 @@ def write_historicals_tab(wb: Workbook, ticker: str) -> None:
         ("total_debt", "Total Debt", "#,##0"),
         ("cash", "Cash", "#,##0"),
         ("net_working_capital", "Net WC", "#,##0"),
+        ("cash_and_st_investments", "Cash + ST Inv", "#,##0"),
     ]
     display = [(c,l,f) for c,l,f in display if c in df.columns]
 

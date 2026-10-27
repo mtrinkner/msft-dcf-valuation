@@ -89,12 +89,14 @@ def clean_balance_sheet(ticker: str) -> pd.DataFrame:
         "Current Liabilities": "current_liabilities",
         "Total Debt": "total_debt",
         "Cash And Cash Equivalents": "cash",
+        "Cash Cash Equivalents And Short Term Investments": "cash_and_st_investments",
         "Stockholders Equity": "total_equity",
     })
     df.index = pd.to_datetime(df.index)
     df["fiscal_year"] = df.index.year
     keep = [c for c in ["fiscal_year","current_assets","current_liabilities",
-                          "total_debt","cash","total_equity"]
+                          "total_debt","cash","cash_and_st_investments",
+                          "total_equity"]
             if c in df.columns]
     df = df[keep].sort_values("fiscal_year").reset_index(drop=True)
     if "current_assets" in df.columns and "current_liabilities" in df.columns:
@@ -106,6 +108,7 @@ def clean_balance_sheet(ticker: str) -> pd.DataFrame:
     "current_liabilities": 88657000000,
     "total_debt": 67775000000,
     "cash": 14224000000,
+    "cash_and_st_investments": 130334000000,
     "total_equity": 141988000000,
     "net_working_capital": 95749000000,
 }])
